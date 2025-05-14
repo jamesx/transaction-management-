@@ -77,7 +77,7 @@ mvn spring-boot:run
 确保已安装Docker和Docker Compose。
 
 ```bash
-# 构建和启动容器
+# 构建和启动容器 默认部署tm-app:latest
 docker-compose up -d
 
 # 查看日志
