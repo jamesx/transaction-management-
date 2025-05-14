@@ -1,6 +1,7 @@
 # 交易管理系统（Transaction Management System）
 
 这是一个简单的银行系统交易管理应用程序，主要用于记录、查看和管理金融交易。
+线上地址为：http://8.218.232.241:9998/
 
 ## 功能特点
 
@@ -62,7 +63,7 @@
 
 ```bash
 # 克隆仓库
-git clone <repository-url>
+git clone https://github.com/jamesx/transaction-management-.git
 cd tm
 
 # 编译和运行
