@@ -1,6 +1,6 @@
 # 交易管理系统（Transaction Management System）
 
-这是一个基于Spring Boot开发的简单交易管理系统，主要用于记录、查看和管理金融交易。
+这是一个简单的银行系统交易管理应用程序，主要用于记录、查看和管理金融交易。
 
 ## 功能特点
 
@@ -69,7 +69,7 @@ cd tm
 mvn spring-boot:run
 ```
 
-应用将在 http://localhost:8080 上启动。
+应用将在 http://localhost:9998 上启动。
 
 ### 使用Docker运行
 
@@ -83,7 +83,7 @@ docker-compose up -d
 docker-compose logs -f
 ```
 
-应用将在 http://localhost:8080 上启动。
+应用将在 http://localhost:9998 上启动。
 
 ### 使用Kubernetes部署
 
@@ -196,15 +196,3 @@ mvn test -Dtest=StressTest
    - Kubernetes部署配置提供高可用性
    - 水平自动扩展满足负载需求
    - 健康检查确保可靠运行
-
-## 可能的改进
-
-1. 添加更多交易类型和支持更复杂的业务规则
-2. 实现用户认证和权限控制
-3. 添加交易搜索和高级筛选功能
-4. 添加交易报表和统计功能
-5. 实现持久化存储
-6. 添加API文档（Swagger/OpenAPI）
-7. 实现事件驱动架构记录交易历史
-8. 添加分布式跟踪和监控系统集成
-9. 实现蓝绿部署或金丝雀发布策略 
