@@ -6,7 +6,7 @@ data:
   application-prod.properties: |
     # 应用配置
     spring.application.name=tm-app
-    server.port=8080
+    server.port=9998
     
     # 缓存配置
     spring.cache.type=caffeine
