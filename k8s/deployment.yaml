@@ -19,7 +19,7 @@ spec:
         image: ${DOCKER_REGISTRY}/tm-app:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 9998
         resources:
           requests:
             memory: "256Mi"
@@ -30,13 +30,13 @@ spec:
         readinessProbe:
           httpGet:
             path: /actuator/health
-            port: 8080
+            port: 9998
           initialDelaySeconds: 30
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /actuator/health
-            port: 8080
+            port: 9998
           initialDelaySeconds: 60
           periodSeconds: 20
         env:
@@ -52,5 +52,5 @@ spec:
     app: tm-app
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 9998
   type: ClusterIP 
