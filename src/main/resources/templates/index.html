@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            padding-top: 30px;
+            padding-bottom: 50px;
+            color: #2c3e50;
+        }
+        
+        .container {
+            max-width: 1200px;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color), #4a69bd);
+            color: white;
+            padding: 30px 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 2.2rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            font-weight: 600;
+        }
+        
+        .card-header h4 {
+            margin: 0;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+        
+        .form-control {
+            border-radius: var(--border-radius);
+            padding: 12px 15px;
+            border: 1px solid #e1e5eb;
+            font-size: 0.95rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23212529' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+            border-color: #95a5a6;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            border-color: #7f8c8d;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            font-weight: 600;
+            color: var(--secondary-color);
+            border-top: none;
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+        
+        .transaction-form {
+            margin-bottom: 30px;
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: var(--border-radius);
+            display: none;
+        }
+        
+        .success-message {
+            color: var(--success-color);
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: rgba(46, 204, 113, 0.1);
+            border-radius: var(--border-radius);
+            display: none;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #page-info {
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 5px 15px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+        }
+        
+        .transaction-type {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+            min-width: 100px;
+        }
+        
+        .type-deposit {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+        }
+        
+        .type-withdrawal {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: #c0392b;
+        }
+        
+        .type-transfer {
+            background-color: rgba(52, 152, 219, 0.15);
+            color: #2980b9;
+        }
+        
+        .type-payment {
+            background-color: rgba(155, 89, 182, 0.15);
+            color: #8e44ad;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            visibility: hidden;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(52, 152, 219, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header text-center">
+            <h1><i class="fas fa-exchange-alt me-2"></i>交易管理系统</h1>
+            <p class="mt-2 mb-0">高效管理您的所有交易记录</p>
+        </div>
+        
+        <div class="row transaction-form">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 id="form-title"><i class="fas fa-plus-circle me-2"></i>创建新交易</h4>
+                        <div class="form-mode-badge" id="form-mode-badge"></div>
+                    </div>
+                    <div class="card-body">
+                        <form id="transaction-form">
+                            <input type="hidden" id="transaction-id">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="amount" class="form-label">金额</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
+                                        <input type="number" class="form-control" id="amount" step="0.01" required placeholder="输入金额">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="currency" class="form-label">货币</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                                        <select class="form-control" id="currency" required>
+                                            <option value="">选择货币</option>
+                                            <option value="USD">USD - 美元</option>
+                                            <option value="EUR">EUR - 欧元</option>
+                                            <option value="GBP">GBP - 英镑</option>
+                                            <option value="JPY">JPY - 日元</option>
+                                            <option value="CNY">CNY - 人民币</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">描述</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                                    <input type="text" class="form-control" id="description" placeholder="交易描述（可选）">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="type" class="form-label">类型</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                    <select class="form-control" id="type" required>
+                                        <option value="">选择类型</option>
+                                        <option value="DEPOSIT">存款</option>
+                                        <option value="WITHDRAWAL">取款</option>
+                                        <option value="TRANSFER">转账</option>
+                                        <option value="PAYMENT">支付</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="submit" class="btn btn-primary" id="submit-btn">
+                                    <i class="fas fa-save me-2"></i>创建交易
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="cancel-btn" style="display: none;">
+                                    <i class="fas fa-times me-2"></i>取消
+                                </button>
+                            </div>
+                        </form>
+                        <div id="error-message" class="error-message">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <span id="error-text"></span>
+                        </div>
+                        <div id="success-message" class="success-message">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span id="success-text"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4><i class="fas fa-list me-2"></i>交易列表</h4>
+                        <div class="pagination-controls">
+                            <button class="btn btn-outline-primary btn-sm" id="prev-page" disabled>
+                                <i class="fas fa-chevron-left me-1"></i>上一页
+                            </button>
+                            <span id="page-info">第 1 页</span>
+                            <button class="btn btn-outline-primary btn-sm" id="next-page">
+                                下一页<i class="fas fa-chevron-right ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>金额</th>
+                                        <th>描述</th>
+                                        <th>类型</th>
+                                        <th>时间</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transaction-table-body">
+                                    <!-- Transaction data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const API_URL = '/api/transactions';
+            let currentPage = 0;
+            const pageSize = 10;
+            let editMode = false;
+            
+            // Form elements
+            const transactionForm = document.getElementById('transaction-form');
+            const formTitle = document.getElementById('form-title');
+            const formModeBadge = document.getElementById('form-mode-badge');
+            const transactionId = document.getElementById('transaction-id');
+            const amountInput = document.getElementById('amount');
+            const descriptionInput = document.getElementById('description');
+            const typeInput = document.getElementById('type');
+            const currencyInput = document.getElementById('currency');
+            const submitBtn = document.getElementById('submit-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const successMessage = document.getElementById('success-message');
+            const successText = document.getElementById('success-text');
+            
+            // Pagination elements
+            const prevPageBtn = document.getElementById('prev-page');
+            const nextPageBtn = document.getElementById('next-page');
+            const pageInfo = document.getElementById('page-info');
+            
+            // Loading overlay
+            const loadingOverlay = document.getElementById('loading-overlay');
+            
+            // Load transactions on page load
+            loadTransactions();
+            
+            // Form submission
+            transactionForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const transaction = {
+                    amount: parseFloat(amountInput.value),
+                    description: descriptionInput.value,
+                    type: typeInput.value,
+                    currency: currencyInput.value
+                };
+                
+                if (editMode) {
+                    updateTransaction(transactionId.value, transaction);
+                } else {
+                    createTransaction(transaction);
+                }
+            });
+            
+            // Cancel button
+            cancelBtn.addEventListener('click', function() {
+                resetForm();
+            });
+            
+            // Pagination
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 0) {
+                    currentPage--;
+                    loadTransactions();
+                }
+            });
+            
+            nextPageBtn.addEventListener('click', function() {
+                currentPage++;
+                loadTransactions();
+            });
+            
+            // Function to show loading
+            function showLoading() {
+                loadingOverlay.classList.add('active');
+            }
+            
+            // Function to hide loading
+            function hideLoading() {
+                loadingOverlay.classList.remove('active');
+            }
+            
+            // Function to load transactions
+            function loadTransactions() {
+                showLoading();
+                fetch(`${API_URL}?page=${currentPage}&size=${pageSize}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayTransactions(data);
+                        updatePagination();
+                        hideLoading();
+                    })
+                    .catch(error => {
+                        showError('加载交易失败: ' + error.message);
+                        hideLoading();
+                    });
+            }
+            
+            // Function to create transaction
+            function createTransaction(transaction) {
+                showLoading();
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transaction)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showSuccess('交易创建成功！');
+                    resetForm();
+                    loadTransactions();
+                    hideLoading();
+                })
+                .catch(error => {
+                    showError('创建交易失败: ' + (error.message || JSON.stringify(error)));
+                    hideLoading();
+                });
+            }
+            
+            // Function to update transaction
+            function updateTransaction(id, transaction) {
+                showLoading();
+                fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transaction)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showSuccess('交易更新成功！');
+                    resetForm();
+                    loadTransactions();
+                    hideLoading();
+                })
+                .catch(error => {
+                    showError('更新交易失败: ' + (error.message || JSON.stringify(error)));
+                    hideLoading();
+                });
+            }
+            
+            // Function to delete transaction
+            function deleteTransaction(id) {
+                if (!confirm('确定要删除这条交易记录吗？')) {
+                    return;
+                }
+                
+                showLoading();
+                fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showSuccess('交易删除成功！');
+                    loadTransactions();
+                    hideLoading();
+                })
+                .catch(error => {
+                    showError('删除交易失败: ' + (error.message || JSON.stringify(error)));
+                    hideLoading();
+                });
+            }
+            
+            // Function to display transactions
+            function displayTransactions(transactions) {
+                const tableBody = document.getElementById('transaction-table-body');
+                tableBody.innerHTML = '';
+                
+                if (transactions.length === 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="7" class="text-center py-4">没有找到交易记录</td>';
+                    tableBody.appendChild(row);
+                    return;
+                }
+                
+                transactions.forEach(transaction => {
+                    const row = document.createElement('tr');
+                    
+                    // Format date
+                    const date = new Date(transaction.timestamp);
+                    const formattedDate = date.toLocaleString();
+                    
+                    // Get type class
+                    let typeClass = '';
+                    switch(transaction.type) {
+                        case 'DEPOSIT':
+                            typeClass = 'type-deposit';
+                            break;
+                        case 'WITHDRAWAL':
+                            typeClass = 'type-withdrawal';
+                            break;
+                        case 'TRANSFER':
+                            typeClass = 'type-transfer';
+                            break;
+                        case 'PAYMENT':
+                            typeClass = 'type-payment';
+                            break;
+                    }
+                    
+                    // Get translated type
+                    let typeText = '';
+                    switch(transaction.type) {
+                        case 'DEPOSIT':
+                            typeText = '存款';
+                            break;
+                        case 'WITHDRAWAL':
+                            typeText = '取款';
+                            break;
+                        case 'TRANSFER':
+                            typeText = '转账';
+                            break;
+                        case 'PAYMENT':
+                            typeText = '支付';
+                            break;
+                        default:
+                            typeText = transaction.type;
+                    }
+                    
+                    // Get status class
+                    let statusClass = '';
+                    switch(transaction.status) {
+                        case 'COMPLETED':
+                            statusClass = 'bg-success';
+                            break;
+                        case 'PENDING':
+                            statusClass = 'bg-warning';
+                            break;
+                        case 'FAILED':
+                            statusClass = 'bg-danger';
+                            break;
+                        default:
+                            statusClass = 'bg-secondary';
+                    }
+                    
+                    // Get translated status
+                    let statusText = '';
+                    switch(transaction.status) {
+                        case 'COMPLETED':
+                            statusText = '已完成';
+                            break;
+                        case 'PENDING':
+                            statusText = '处理中';
+                            break;
+                        case 'FAILED':
+                            statusText = '失败';
+                            break;
+                        default:
+                            statusText = transaction.status;
+                    }
+                    
+                    row.innerHTML = `
+                        <td><span class="badge bg-secondary">${transaction.id.substring(0, 8)}...</span></td>
+                        <td><strong>${transaction.amount}</strong> <span class="text-muted">${transaction.currency}</span></td>
+                        <td>${transaction.description || '-'}</td>
+                        <td><span class="transaction-type ${typeClass}">${typeText}</span></td>
+                        <td><i class="far fa-clock me-1"></i>${formattedDate}</td>
+                        <td><span class="status-badge ${statusClass} text-white">${statusText}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-outline-primary action-btn edit-btn" data-id="${transaction.id}" title="编辑">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger action-btn delete-btn" data-id="${transaction.id}" title="删除">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        editTransaction(id);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        deleteTransaction(id);
+                    });
+                });
+            }
+            
+            // Function to edit transaction
+            function editTransaction(id) {
+                showLoading();
+                fetch(`${API_URL}/${id}`)
+                    .then(response => response.json())
+                    .then(transaction => {
+                        transactionId.value = transaction.id;
+                        amountInput.value = transaction.amount;
+                        descriptionInput.value = transaction.description || '';
+                        typeInput.value = transaction.type;
+                        currencyInput.value = transaction.currency;
+                        
+                        formTitle.innerHTML = '<i class="fas fa-edit me-2"></i>编辑交易';
+                        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>更新交易';
+                        cancelBtn.style.display = 'block';
+                        editMode = true;
+                        
+                        // Scroll to form
+                        document.querySelector('.transaction-form').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        
+                        hideLoading();
+                    })
+                    .catch(error => {
+                        showError('加载交易失败: ' + error.message);
+                        hideLoading();
+                    });
+            }
+            
+            // Function to reset form
+            function resetForm() {
+                transactionForm.reset();
+                transactionId.value = '';
+                formTitle.innerHTML = '<i class="fas fa-plus-circle me-2"></i>创建新交易';
+                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>创建交易';
+                cancelBtn.style.display = 'none';
+                editMode = false;
+                clearMessages();
+            }
+            
+            // Function to update pagination
+            function updatePagination() {
+                pageInfo.textContent = `第 ${currentPage + 1} 页`;
+                prevPageBtn.disabled = currentPage === 0;
+                
+                // Check if there's a next page by looking at the number of transactions
+                fetch(`${API_URL}?page=${currentPage + 1}&size=${pageSize}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        nextPageBtn.disabled = data.length === 0;
+                    })
+                    .catch(error => {
+                        console.error('检查下一页失败:', error);
+                    });
+            }
+            
+            // Function to show error message
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
+            
+            // Function to show success message
+            function showSuccess(message) {
+                successText.textContent = message;
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 5000);
+            }
+            
+            // Function to clear messages
+            function clearMessages() {
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 
